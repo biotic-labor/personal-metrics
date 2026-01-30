@@ -1,0 +1,14 @@
+# Personal metrics dashboard
+metrics.bioticlabor.com {
+    reverse_proxy metrics:3000
+}
+
+# Main site - uncomment when ready
+# bioticlabor.com {
+#     reverse_proxy main:3000
+# }
+
+# Redirect www to apex
+# www.bioticlabor.com {
+#     redir https://bioticlabor.com{uri} permanent
+# }

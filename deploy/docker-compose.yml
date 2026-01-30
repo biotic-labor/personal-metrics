@@ -1,0 +1,40 @@
+services:
+  caddy:
+    image: caddy:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    restart: unless-stopped
+    depends_on:
+      - metrics
+
+  # Personal metrics dashboard
+  metrics:
+    build:
+      context: ../
+      dockerfile: Dockerfile
+    expose:
+      - "3000"
+    volumes:
+      - metrics_data:/app/data
+    environment:
+      - AUTH_SECRET=${AUTH_SECRET}
+      - AUTH_TRUST_HOST=true
+    restart: unless-stopped
+
+  # Placeholder for main bioticlabor.com site
+  # Uncomment and configure when ready
+  # main:
+  #   build: /path/to/bioticlabor
+  #   expose:
+  #     - "3000"
+  #   restart: unless-stopped
+
+volumes:
+  caddy_data:
+  caddy_config:
+  metrics_data:
