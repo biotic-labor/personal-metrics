@@ -1,0 +1,14 @@
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - metrics-data:/app/data
+    environment:
+      - AUTH_SECRET=${AUTH_SECRET}
+      - AUTH_TRUST_HOST=true
+    restart: unless-stopped
+
+volumes:
+  metrics-data:
