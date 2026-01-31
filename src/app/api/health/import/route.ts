@@ -38,8 +38,8 @@ export async function POST(request: NextRequest) {
 
   const body = await request.json();
 
-  // Log incoming payload for debugging
-  console.log('Health import payload:', JSON.stringify(body, null, 2));
+  // Log incoming payload structure
+  console.log('Health import - metrics count:', body.data?.metrics?.length);
 
   const metrics = body.data?.metrics || body.metrics || [];
 
@@ -48,27 +48,34 @@ export async function POST(request: NextRequest) {
   }
 
   // Group metrics by date
+  // Health Auto Export format: { name: "step_count", data: [{ qty, date }, ...] }
   const byDate = new Map<string, Record<string, number>>();
 
   for (const metric of metrics) {
-    const date = metric.date?.split('T')[0] || new Date().toISOString().split('T')[0];
-    if (!byDate.has(date)) {
-      byDate.set(date, {});
-    }
-    const dateMetrics = byDate.get(date)!;
+    const name = (metric.name || '').toLowerCase().replace(/[^a-z]/g, '');
+    const dataPoints = metric.data || [metric]; // Handle both formats
 
-    // Normalize metric name to lowercase for matching
-    const name = (metric.name || metric.type || '').toLowerCase().replace(/[^a-z]/g, '');
-    const value = Math.round(metric.qty || metric.value || metric.sum || 0);
+    for (const point of dataPoints) {
+      // Parse date - handle "2026-01-31 13:36:00 -0600" format
+      const dateStr = point.date?.split(' ')[0] || new Date().toISOString().split('T')[0];
 
-    if (name.includes('step')) {
-      dateMetrics.steps = value;
-    } else if (name.includes('activeenergy') || name.includes('calorie')) {
-      dateMetrics.calories = value;
-    } else if (name.includes('restingheart') || name.includes('restinghr')) {
-      dateMetrics.restingHr = value;
-    } else if (name.includes('exercise') || name.includes('workout')) {
-      dateMetrics.workoutMinutes = value;
+      if (!byDate.has(dateStr)) {
+        byDate.set(dateStr, {});
+      }
+      const dateMetrics = byDate.get(dateStr)!;
+      const value = Math.round(point.qty || point.value || 0);
+
+      // Aggregate by summing (for steps, calories, exercise) or taking latest (for HR)
+      if (name.includes('step')) {
+        dateMetrics.steps = (dateMetrics.steps || 0) + value;
+      } else if (name.includes('activeenergy') || name.includes('calorie')) {
+        dateMetrics.calories = (dateMetrics.calories || 0) + value;
+      } else if (name.includes('restingheart') || name.includes('restinghr')) {
+        // For resting HR, take the value (usually one per day)
+        dateMetrics.restingHr = value;
+      } else if (name.includes('exercise') || name.includes('workout')) {
+        dateMetrics.workoutMinutes = (dateMetrics.workoutMinutes || 0) + value;
+      }
     }
   }
 
