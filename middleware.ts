@@ -9,7 +9,8 @@ export function middleware(request: NextRequest) {
   const isLoginPage = request.nextUrl.pathname === '/login';
   const isAuthRoute = request.nextUrl.pathname.startsWith('/api/auth');
   const isWebhook = request.nextUrl.pathname === '/api/health/import'
-    || request.nextUrl.pathname === '/api/habits/sync-github';
+    || request.nextUrl.pathname === '/api/habits/sync-github'
+    || request.nextUrl.pathname === '/api/books/sync';
 
   // Allow auth routes and webhooks
   if (isAuthRoute || isWebhook) {
