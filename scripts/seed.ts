@@ -19,10 +19,8 @@ const db = drizzle(sqlite);
 
 const defaultHabits = [
   { name: 'Exercise', color: '#3B82F6', icon: 'dumbbell' },
-  { name: 'Journal', color: '#F59E0B', icon: 'pencil' },
   { name: 'Meditate', color: '#EF4444', icon: 'brain' },
   { name: 'Read', color: '#22C55E', icon: 'book' },
-  { name: 'Series', color: '#14B8A6', icon: 'tv' },
   { name: 'Eat Healthy', color: '#F97316', icon: 'salad' },
   { name: 'No Alcohol', color: '#DC2626', icon: 'wine-off' },
   { name: 'Code', color: '#8B5CF6', icon: 'code' },
