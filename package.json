@@ -13,8 +13,10 @@
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
+    "@types/d3": "^7.4.3",
     "bcrypt": "^6.0.0",
     "better-sqlite3": "^12.6.2",
+    "d3": "^7.9.0",
     "drizzle-orm": "^0.45.1",
     "fast-xml-parser": "^5.3.4",
     "next": "16.1.6",

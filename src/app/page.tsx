@@ -4,6 +4,7 @@ import { HabitCalendar } from '@/components/dashboard/HabitCalendar';
 import { HabitSummary } from '@/components/dashboard/HabitSummary';
 import { BookLibrary } from '@/components/dashboard/BookLibrary';
 import { HealthMetrics } from '@/components/dashboard/HealthMetrics';
+import { HealthCharts } from '@/components/dashboard/HealthCharts';
 import { db } from '@/lib/db';
 import { habits } from '../../drizzle/schema';
 import { eq, asc } from 'drizzle-orm';
@@ -57,6 +58,9 @@ export default async function Dashboard() {
                 <CardTitle>Health</CardTitle>
               </CardHeader>
               <HealthMetrics />
+              <div className="border-t border-zinc-200 pt-4 dark:border-zinc-800">
+                <HealthCharts />
+              </div>
             </Card>
           </div>
         </div>
