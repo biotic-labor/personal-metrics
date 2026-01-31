@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
     if (!session?.user?.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
-    userId = userId;
+    userId = session.user.id;
   }
 
   if (!feedUrl) {
