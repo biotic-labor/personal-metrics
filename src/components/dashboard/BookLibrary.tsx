@@ -8,6 +8,8 @@ export function BookLibrary() {
   const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAddForm, setShowAddForm] = useState(false);
+  const [showSyncForm, setShowSyncForm] = useState(false);
+  const [syncing, setSyncing] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -48,6 +50,28 @@ export function BookLibrary() {
     form.reset();
     setShowAddForm(false);
     refreshBooks();
+  }
+
+  async function syncGoodreads(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setSyncing(true);
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+    const feedUrl = formData.get('feedUrl') as string;
+
+    const res = await fetch(`/api/books/sync?url=${encodeURIComponent(feedUrl)}`, {
+      method: 'POST',
+    });
+
+    setSyncing(false);
+    if (res.ok) {
+      const data = await res.json();
+      alert(data.message);
+      setShowSyncForm(false);
+      refreshBooks();
+    } else {
+      alert('Failed to sync from Goodreads');
+    }
   }
 
   const reading = books.filter((b) => b.status === 'reading');
@@ -106,13 +130,49 @@ export function BookLibrary() {
             </button>
           </div>
         </form>
+      ) : showSyncForm ? (
+        <form onSubmit={syncGoodreads} className="space-y-2">
+          <input
+            name="feedUrl"
+            placeholder="Goodreads RSS URL"
+            required
+            className="w-full rounded border border-zinc-300 bg-white px-2 py-1 text-sm dark:border-zinc-600 dark:bg-zinc-800"
+          />
+          <p className="text-xs text-zinc-500">
+            Find at: Goodreads &gt; My Books &gt; Currently Reading &gt; RSS
+          </p>
+          <div className="flex gap-2">
+            <button
+              type="submit"
+              disabled={syncing}
+              className="rounded bg-blue-600 px-3 py-1 text-sm text-white hover:bg-blue-700 disabled:opacity-50"
+            >
+              {syncing ? 'Syncing...' : 'Sync'}
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowSyncForm(false)}
+              className="rounded px-3 py-1 text-sm text-zinc-600 hover:text-zinc-900 dark:text-zinc-400"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
       ) : (
-        <button
-          onClick={() => setShowAddForm(true)}
-          className="text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400"
-        >
-          + Add book
-        </button>
+        <div className="flex gap-3">
+          <button
+            onClick={() => setShowAddForm(true)}
+            className="text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400"
+          >
+            + Add book
+          </button>
+          <button
+            onClick={() => setShowSyncForm(true)}
+            className="text-sm text-zinc-500 hover:text-zinc-700 dark:text-zinc-400"
+          >
+            Sync Goodreads
+          </button>
+        </div>
       )}
 
       {completed.length > 0 && (
