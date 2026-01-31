@@ -37,10 +37,14 @@ export async function POST(request: NextRequest) {
   }
 
   const body = await request.json();
+
+  // Log incoming payload for debugging
+  console.log('Health import payload:', JSON.stringify(body, null, 2));
+
   const metrics = body.data?.metrics || body.metrics || [];
 
   if (!Array.isArray(metrics) || metrics.length === 0) {
-    return NextResponse.json({ error: 'No metrics provided' }, { status: 400 });
+    return NextResponse.json({ error: 'No metrics provided', received: body }, { status: 400 });
   }
 
   // Group metrics by date
@@ -53,25 +57,22 @@ export async function POST(request: NextRequest) {
     }
     const dateMetrics = byDate.get(date)!;
 
-    switch (metric.name) {
-      case 'step_count':
-      case 'steps':
-        dateMetrics.steps = Math.round(metric.qty || metric.value || 0);
-        break;
-      case 'active_energy':
-      case 'calories':
-        dateMetrics.calories = Math.round(metric.qty || metric.value || 0);
-        break;
-      case 'resting_heart_rate':
-      case 'restingHr':
-        dateMetrics.restingHr = Math.round(metric.qty || metric.value || 0);
-        break;
-      case 'apple_exercise_time':
-      case 'workoutMinutes':
-        dateMetrics.workoutMinutes = Math.round(metric.qty || metric.value || 0);
-        break;
+    // Normalize metric name to lowercase for matching
+    const name = (metric.name || metric.type || '').toLowerCase().replace(/[^a-z]/g, '');
+    const value = Math.round(metric.qty || metric.value || metric.sum || 0);
+
+    if (name.includes('step')) {
+      dateMetrics.steps = value;
+    } else if (name.includes('activeenergy') || name.includes('calorie')) {
+      dateMetrics.calories = value;
+    } else if (name.includes('restingheart') || name.includes('restinghr')) {
+      dateMetrics.restingHr = value;
+    } else if (name.includes('exercise') || name.includes('workout')) {
+      dateMetrics.workoutMinutes = value;
     }
   }
+
+  console.log('Parsed metrics by date:', Object.fromEntries(byDate));
 
   // Upsert each date's metrics
   for (const [date, data] of byDate) {
