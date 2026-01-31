@@ -1,21 +1,28 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
-import { habits, habitEntries } from '../../../../../drizzle/schema';
+import { habits, habitEntries, users } from '../../../../../drizzle/schema';
 import { eq, and } from 'drizzle-orm';
-import { auth } from '@/lib/auth';
 import { v4 as uuidv4 } from 'uuid';
 
 // Sync GitHub contributions to the "Code" habit
-// POST /api/habits/sync-github?username=biotic-labor
+// POST /api/habits/sync-github?username=biotic-labor&key=email@example.com
 
 export async function POST(request: NextRequest) {
-  const session = await auth();
-  if (!session?.user?.id) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const searchParams = request.nextUrl.searchParams;
+  const apiKey = searchParams.get('key');
+  const username = searchParams.get('username') || 'biotic-labor';
+
+  if (!apiKey) {
+    return NextResponse.json({ error: 'API key required' }, { status: 401 });
   }
 
-  const searchParams = request.nextUrl.searchParams;
-  const username = searchParams.get('username') || 'biotic-labor';
+  const user = await db.query.users.findFirst({
+    where: eq(users.email, apiKey),
+  });
+
+  if (!user) {
+    return NextResponse.json({ error: 'Invalid API key' }, { status: 401 });
+  }
 
   // Find the "Code" habit
   const codeHabit = await db.query.habits.findFirst({
@@ -68,7 +75,7 @@ export async function POST(request: NextRequest) {
         where: and(
           eq(habitEntries.habitId, codeHabit.id),
           eq(habitEntries.date, date),
-          eq(habitEntries.userId, session.user.id)
+          eq(habitEntries.userId, user.id)
         ),
       });
 
@@ -77,7 +84,7 @@ export async function POST(request: NextRequest) {
           id: uuidv4(),
           habitId: codeHabit.id,
           date,
-          userId: session.user.id,
+          userId: user.id,
         });
         added++;
       } else {
