@@ -2,6 +2,28 @@
 
 import { useState, useEffect } from 'react';
 import type { Habit, HabitEntry } from '@/types';
+import {
+  Dumbbell,
+  Brain,
+  Book,
+  Salad,
+  WineOff,
+  Code,
+  Heart,
+  Gift,
+  Circle,
+} from 'lucide-react';
+
+const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
+  dumbbell: Dumbbell,
+  brain: Brain,
+  book: Book,
+  salad: Salad,
+  'wine-off': WineOff,
+  code: Code,
+  heart: Heart,
+  gift: Gift,
+};
 
 interface HabitCalendarProps {
   habits: Habit[];
@@ -101,26 +123,30 @@ export function HabitCalendar({ habits }: HabitCalendarProps) {
       </div>
 
       <div className="mb-3 flex flex-wrap gap-2">
-        {habits.map((habit) => (
-          <button
-            key={habit.id}
-            onClick={() =>
-              setSelectedHabit(selectedHabit === habit.id ? null : habit.id)
-            }
-            className={`rounded-full px-3 py-1 text-xs font-medium transition-all ${
-              selectedHabit === habit.id
-                ? 'ring-2 ring-offset-2 dark:ring-offset-zinc-900'
-                : 'opacity-70 hover:opacity-100'
-            }`}
-            style={{
-              backgroundColor: habit.color + '20',
-              color: habit.color,
-              ...(selectedHabit === habit.id && { ringColor: habit.color }),
-            }}
-          >
-            {habit.name}
-          </button>
-        ))}
+        {habits.map((habit) => {
+          const IconComponent = iconMap[habit.icon] || Circle;
+          return (
+            <button
+              key={habit.id}
+              onClick={() =>
+                setSelectedHabit(selectedHabit === habit.id ? null : habit.id)
+              }
+              className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium transition-all ${
+                selectedHabit === habit.id
+                  ? 'ring-2 ring-offset-2 dark:ring-offset-zinc-900'
+                  : 'opacity-70 hover:opacity-100'
+              }`}
+              style={{
+                backgroundColor: habit.color + '20',
+                color: habit.color,
+                ...(selectedHabit === habit.id && { ringColor: habit.color }),
+              }}
+            >
+              <IconComponent className="h-3 w-3" />
+              {habit.name}
+            </button>
+          );
+        })}
       </div>
 
       <div className="grid grid-cols-7 gap-1 text-center text-xs text-zinc-500 dark:text-zinc-400">
