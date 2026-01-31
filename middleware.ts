@@ -8,9 +8,10 @@ export function middleware(request: NextRequest) {
   const isLoggedIn = !!sessionToken;
   const isLoginPage = request.nextUrl.pathname === '/login';
   const isAuthRoute = request.nextUrl.pathname.startsWith('/api/auth');
+  const isWebhook = request.nextUrl.pathname === '/api/health/import';
 
-  // Allow auth routes
-  if (isAuthRoute) {
+  // Allow auth routes and webhooks
+  if (isAuthRoute || isWebhook) {
     return NextResponse.next();
   }
 
