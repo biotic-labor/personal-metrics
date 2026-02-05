@@ -30,6 +30,7 @@ export default function ShoppingPage() {
   const [activeListId, setActiveListId] = useState<string | null>(null);
   const [items, setItems] = useState<ShoppingItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [showGenerateForm, setShowGenerateForm] = useState(false);
   const [generateForm, setGenerateForm] = useState({
     name: '',
@@ -87,6 +88,10 @@ export default function ShoppingPage() {
       setLists(prev => [newList, ...prev]);
       setActiveListId(newList.id);
       setShowGenerateForm(false);
+      setError(null);
+    } else {
+      const data = await res.json();
+      setError(data.error || 'Failed to generate shopping list');
     }
   }
 
@@ -145,6 +150,15 @@ export default function ShoppingPage() {
           Generate from plan
         </button>
       </div>
+
+      {error && (
+        <div className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-800 dark:bg-red-900/20 dark:text-red-400">
+          {error}
+          {error.includes('household') && (
+            <a href="/meals/settings" className="ml-2 underline">Go to settings</a>
+          )}
+        </div>
+      )}
 
       {showGenerateForm && (
         <form

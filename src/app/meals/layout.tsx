@@ -6,7 +6,6 @@ import { signOut } from 'next-auth/react';
 import {
   UtensilsCrossed,
   CalendarDays,
-  Refrigerator,
   ShoppingCart,
   Settings,
   Search,
@@ -15,7 +14,6 @@ import {
 const navItems = [
   { href: '/meals/plan', label: 'Plan', icon: CalendarDays },
   { href: '/meals/recipes', label: 'Recipes', icon: Search },
-  { href: '/meals/pantry', label: 'Pantry', icon: Refrigerator },
   { href: '/meals/shopping', label: 'Shopping', icon: ShoppingCart },
   { href: '/meals/settings', label: 'Settings', icon: Settings },
 ];

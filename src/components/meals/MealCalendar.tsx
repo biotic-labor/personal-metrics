@@ -20,7 +20,7 @@ interface MealCalendarProps {
   onAddRecipe: (date: string, slot: string) => void;
 }
 
-const MEAL_SLOTS = ['breakfast', 'lunch', 'dinner', 'snack'];
+const MEAL_SLOTS = ['breakfast', 'lunch', 'dinner'];
 const DAY_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
 function getWeekDates(weekStart: string): string[] {
