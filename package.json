@@ -10,18 +10,23 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:seed": "npx tsx scripts/seed.ts",
-    "db:studio": "drizzle-kit studio"
+    "db:studio": "drizzle-kit studio",
+    "db:meals:generate": "drizzle-kit generate --config=drizzle-meals.config.ts",
+    "db:meals:migrate": "drizzle-kit migrate --config=drizzle-meals.config.ts",
+    "db:meals:import": "npx tsx scripts/import-recipes.ts"
   },
   "dependencies": {
     "@types/d3": "^7.4.3",
     "bcrypt": "^6.0.0",
     "better-sqlite3": "^12.6.2",
+    "csv-parse": "^6.1.0",
     "d3": "^7.9.0",
     "drizzle-orm": "^0.45.1",
     "fast-xml-parser": "^5.3.4",
     "lucide-react": "^0.563.0",
     "next": "16.1.6",
     "next-auth": "^5.0.0-beta.30",
+    "parse-ingredient": "^2.0.1",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "uuid": "^13.0.0"

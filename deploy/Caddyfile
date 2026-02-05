@@ -3,6 +3,11 @@ metrics.bioticlabor.com {
     reverse_proxy metrics:3000
 }
 
+# Meal planning app (same container, subdomain routing handled by Next.js middleware)
+meals.bioticlabor.com {
+    reverse_proxy metrics:3000
+}
+
 # Main site - uncomment when ready
 # bioticlabor.com {
 #     reverse_proxy main:3000
