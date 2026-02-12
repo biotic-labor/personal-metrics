@@ -16,7 +16,8 @@ export function middleware(request: NextRequest) {
   const isWebhook = request.nextUrl.pathname === '/api/health/import'
     || request.nextUrl.pathname === '/api/habits/sync-github'
     || request.nextUrl.pathname === '/api/books/sync'
-    || request.nextUrl.pathname === '/api/habits/bot';
+    || request.nextUrl.pathname === '/api/habits/bot'
+    || request.nextUrl.pathname.startsWith('/api/meals/bot');
   const isMeals = isMealsSubdomain(request);
 
   // Allow auth routes and webhooks
