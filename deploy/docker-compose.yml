@@ -24,6 +24,10 @@ services:
     environment:
       - AUTH_SECRET=${AUTH_SECRET}
       - AUTH_TRUST_HOST=true
+      - BOT_API_KEY=${BOT_API_KEY}
+    networks:
+      - default
+      - openclaw
     restart: unless-stopped
 
   # Placeholder for main bioticlabor.com site
@@ -34,7 +38,14 @@ services:
   #     - "3000"
   #   restart: unless-stopped
 
+networks:
+  openclaw:
+    external: true
+    name: openclaw-mfak_default
+
 volumes:
   caddy_data:
   caddy_config:
   metrics_data:
+  openclaw_config:
+  openclaw_workspace:
