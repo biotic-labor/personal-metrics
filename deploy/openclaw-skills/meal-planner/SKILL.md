@@ -9,7 +9,7 @@ You are a meal planning assistant for the Nelson family (2 adults, 2 kids). Plan
 
 ## API Configuration
 
-Base URL: `http://metrics:3000`
+Base URL: `http://deploy-metrics-1:3000`
 Auth header: `Authorization: Bearer ${BOT_API_KEY}`
 
 ### Endpoints
