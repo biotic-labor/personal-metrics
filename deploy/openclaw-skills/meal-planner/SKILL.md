@@ -15,7 +15,7 @@ You MUST use curl to interact with the meals API. Do not just generate a text pl
 Run this curl command to fetch your planning context:
 
 ```bash
-curl -s -H "Authorization: Bearer 52c3b0051c852edb6ed90d756b4d2a5e9031a5f59ed5a3b75e6d232032f79641" https://metrics.bioticlabor.com/api/meals/bot
+curl -s -H "Authorization: Bearer 52c3b0051c852edb6ed90d756b4d2a5e9031a5f59ed5a3b75e6d232032f79641" http://deploy-metrics-1:3000/api/meals/bot
 ```
 
 This returns JSON with:
@@ -30,13 +30,13 @@ This returns JSON with:
 Search the recipe database for recipes to fill your plan. Use the staple recipes from Step 1 plus search results:
 
 ```bash
-curl -s -H "Authorization: Bearer 52c3b0051c852edb6ed90d756b4d2a5e9031a5f59ed5a3b75e6d232032f79641" "https://metrics.bioticlabor.com/api/meals/bot/search?mealType=dinner&maxTime=30&pageSize=20"
+curl -s -H "Authorization: Bearer 52c3b0051c852edb6ed90d756b4d2a5e9031a5f59ed5a3b75e6d232032f79641" "http://deploy-metrics-1:3000/api/meals/bot/search?mealType=dinner&maxTime=30&pageSize=20"
 ```
 
 You can also search by text query:
 
 ```bash
-curl -s -H "Authorization: Bearer 52c3b0051c852edb6ed90d756b4d2a5e9031a5f59ed5a3b75e6d232032f79641" "https://metrics.bioticlabor.com/api/meals/bot/search?q=chicken&mealType=dinner"
+curl -s -H "Authorization: Bearer 52c3b0051c852edb6ed90d756b4d2a5e9031a5f59ed5a3b75e6d232032f79641" "http://deploy-metrics-1:3000/api/meals/bot/search?q=chicken&mealType=dinner"
 ```
 
 Filter options: `q`, `cuisine`, `mealType` (breakfast/lunch/dinner), `maxTime`, `difficulty` (easy/medium/hard), `source` (user for staples), `pageSize`.
@@ -85,7 +85,7 @@ curl -s -X POST \
     "allergenFlags": ["soy"],
     "dietaryTags": []
   }' \
-  https://metrics.bioticlabor.com/api/meals/bot/recipes
+  http://deploy-metrics-1:3000/api/meals/bot/recipes
 ```
 
 This returns `{"id": 123}`. Use that ID as the `recipeId` in the meal plan.
@@ -106,7 +106,7 @@ curl -s -X POST \
       {"date": "2026-02-17", "mealSlot": "lunch", "recipeId": 1, "servings": 4, "notes": "Leftovers from last night"}
     ]
   }' \
-  https://metrics.bioticlabor.com/api/meals/bot
+  http://deploy-metrics-1:3000/api/meals/bot
 ```
 
 **Servings guide:**
